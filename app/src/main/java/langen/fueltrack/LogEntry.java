@@ -20,6 +20,7 @@ import java.util.Date;
  * logModel entry.
  */
 public class LogEntry implements Serializable {
+    // Specified date format
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 
     // Data describing the entry
@@ -65,7 +66,7 @@ public class LogEntry implements Serializable {
         return String.format("%.2f", getFuelTotalCostNumeric());
     }
 
-    // Setters
+    // String-based setters which throw LogFormatException when invalid data is passed to them
     public void setDate(String s) throws LogFormatException {
         try {
             date = sdf.parse(s);
@@ -109,7 +110,7 @@ public class LogEntry implements Serializable {
         }
     }
 
-    // Serialize or deserialize a LogEntry
+    // Serialize or deserialize a LogEntry to an array of bytes
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
         ObjectOutputStream outStream = new ObjectOutputStream(outBytes);

@@ -18,9 +18,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-// Activity for adding or editing an existing Log Entry
+/*
+ * AddEditActivity
+ * The main activity used to add a new LogEntry or edit an existing LogEntry
+ * Takes a serialized LogEntry from which to work, and returns a new updated
+ * serialized log entry. The Id of the log entry is used to match up the
+ * new & old LogEntries for editing.
+ */
 public class AddEditActivity extends AppCompatActivity {
 
+    // The LogEntry which this activity is editing / adding
     private LogEntry entryToEdit;
 
     // Update the view with the data currently in the entry
@@ -57,6 +64,8 @@ public class AddEditActivity extends AppCompatActivity {
 
         // Try to update entry
         try {
+            // If setting any of the fields fails then an exception will be thrown
+            // and we will proceed to the catch clause
             entryToEdit.setDate(edit_date.getText().toString());
             entryToEdit.setStation(edit_station.getText().toString());
             entryToEdit.setOdometerReading(edit_odometer.getText().toString());
@@ -65,6 +74,7 @@ public class AddEditActivity extends AppCompatActivity {
             entryToEdit.setFuelAmount(edit_amount.getText().toString());
         } catch (LogFormatException e) {
             // Failed, let the user know how, and set the total amount to a placeholder
+            // since it will not be reliable in this state.
             totalAmount.setText("??$");
             Context context = getApplicationContext();
             Toast toast = Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
@@ -73,6 +83,7 @@ public class AddEditActivity extends AppCompatActivity {
         }
     }
 
+    // Commit the current changes if possible and return to the calling activity.
     private void done() {
         // Try to commit the results
         try {
@@ -94,6 +105,7 @@ public class AddEditActivity extends AppCompatActivity {
         finish();
     }
 
+    // Return to the calling activity without commiting the changes.
     private void cancel() {
         setResult(ViewLogActivity.RES_CANCEL);
         finish();
@@ -104,10 +116,9 @@ public class AddEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit);
 
+        // Set up buttons
         Button done = (Button)findViewById(R.id.done_button);
         Button cancel = (Button)findViewById(R.id.cancel_button);
-
-        // Set up buttons
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,11 +137,11 @@ public class AddEditActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // Handle the input
+        // Handle the input from the calling activity
         Intent intent = getIntent();
         byte[] entrySerial = intent.getExtras().getByteArray(ViewLogActivity.ENTRY_TO_EDIT);
         try {
-            // Get the entry to edit
+            // Deserialize the entry to edit
             ObjectInputStream inStream =
                     new ObjectInputStream(new ByteArrayInputStream(entrySerial));
             entryToEdit = (LogEntry)inStream.readObject();
@@ -142,7 +153,7 @@ public class AddEditActivity extends AppCompatActivity {
             Log.d("fuelapp", "Failed to deserialize (class)");
         }
 
-        // Update the view with the entry data
+        // Update the view with the entry data now that we have it
         updateViewWithEntry();
     }
 

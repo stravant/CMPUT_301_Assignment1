@@ -21,16 +21,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringBufferInputStream;
 
+/*
+ * Main ViewController in the project
+ * Handles the viewing of the list of LogEntries, and user control of the
+ * app to enter editing / adding of an entry.
+ */
 public class ViewLogActivity extends AppCompatActivity implements LogView {
+    // Where to save the data
     public static String DATAFILE_NAME = "fuellog_data.txt";
+
+    // Codes for Intent request/response communication with AddEditActivity
     public static int REQ_ADD = 10001;
     public static int REQ_EDIT = 10002;
     public static int RES_CANCEL = 10003;
     public static int RES_COMMIT = 10004;
+
+    // extra parameter to AddEditActivity intents
     public static String ENTRY_TO_EDIT = "EntryToEdit";
 
     // The fuel log model we are working with
     private FuelLog log;
+
+    // The arrayadapter used to display the entries
     private LogEntryArrayAdapter entryArrayAdapter;
 
     // Serialize a log entry
@@ -160,7 +172,7 @@ public class ViewLogActivity extends AppCompatActivity implements LogView {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Handle add from menu
+        // Handle add from menu. Alternative entry point
         if (id == R.id.action_add) {
             addEntry();
             return true;

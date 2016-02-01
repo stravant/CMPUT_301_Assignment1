@@ -19,16 +19,9 @@ public class LogEntryArrayAdapter extends ArrayAdapter<LogEntry> {
     }
 
     public View getView(int position, View v, ViewGroup parent) {
-        // Generate entry view if necessary
+        // Generate entry view if none were recycled
         if (v == null) {
             v = LayoutInflater.from(getContext()).inflate(R.layout.logentry, parent, false);
-//            Button btn = (Button)v.findViewById(R.id.entry_button);
-//            btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    view.
-//                }
-//            });
         }
 
         // Fill in entry
@@ -39,10 +32,10 @@ public class LogEntryArrayAdapter extends ArrayAdapter<LogEntry> {
                             i.getOdometerReading() + "km\n" +
                             "Bought " + i.getFuelAmount() + "L of fuel at " + i.getFuelUnitCost() +
                             "c/L for a total cost of:\n" +
-                            "$" + i.getFuelTotalCost()
-            );
+                            "$" + i.getFuelTotalCost());
         }
 
+        // Return the view to use
         return v;
     }
 }
